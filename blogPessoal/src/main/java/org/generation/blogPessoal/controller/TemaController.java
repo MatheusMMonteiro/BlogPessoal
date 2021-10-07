@@ -42,11 +42,11 @@ public class TemaController {
 		return repository.findById(id)
 				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
-	}/*
-	@RequestMapping("/equipamento/{equipamento}")
-	public ResponseEntity<List<TemaModel>> GetByEquipmaneto(@PathVariable String equipamento) {
-		return ResponseEntity.ok(repository.findAllByEquipamentoContainingIgnoreCase(equipamento));
-	}*/
+	}
+	@RequestMapping("/descricao/{descricao}")
+	public ResponseEntity<List<TemaModel>> getByDescricao(@PathVariable String descricao) {
+		return ResponseEntity.ok(repository.findAllByDescricaoContainingIgnoreCase(descricao));
+	}
 	
 	@PostMapping 
 	public ResponseEntity<TemaModel> post (@RequestBody TemaModel tema){
