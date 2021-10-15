@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -30,8 +31,12 @@ public class UsuarioController {
 	
 	@PostMapping("/cadastrar")
 	public ResponseEntity<Usuario> Post(@RequestBody Usuario usuario){
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(usuarioService.cadastrarUsuario(usuario));
+		return usuarioService.cadastrarUsuario(usuario)
+				.map(usuarioExistente -> ResponseEntity.status(201).body(usuario))
+				.orElseThrow(() ->{
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+							"Usuario existente, cadastre outro usuário!");
+				});
 	}
 	
 	
