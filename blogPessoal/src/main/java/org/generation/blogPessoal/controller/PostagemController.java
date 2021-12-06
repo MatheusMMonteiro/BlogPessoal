@@ -28,7 +28,7 @@ public class PostagemController {
 	private PostagemRepository repository;
 
 	@GetMapping
-	public ResponseEntity<List<Postagem>> buscarTodos() {
+	public ResponseEntity<List<Postagem>> GetAll() {
 		List<Postagem> objetoPostagem = repository.findAll();
 		if (objetoPostagem.isEmpty()) {
 			return ResponseEntity.status(204).build();
@@ -38,28 +38,35 @@ public class PostagemController {
 	}
 
 	@RequestMapping(value = "/{id}")
-	public ResponseEntity<Postagem>buscaId(@PathVariable long id) {
+	public ResponseEntity<Postagem>FindById(@PathVariable long id) {
 		//return ResponseEntity.ok(repository.findById(id));
 		return repository.findById(id)
 				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	@RequestMapping("/titulo/{titulo}")
-	public ResponseEntity<List<Postagem>> buscaTitulo(@PathVariable String titulo) {
+	public ResponseEntity<List<Postagem>> GetByTitulo(@PathVariable String titulo) {
 		return ResponseEntity.ok(repository.getByTituloContainingIgnoreCase(titulo));
 	}
 	
 	@PostMapping 
-	public ResponseEntity<Postagem> salvar (@RequestBody Postagem postagem){
+	public ResponseEntity<Postagem> post (@RequestBody Postagem postagem){
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));		
 	}
 	@PutMapping 
-	public ResponseEntity<Postagem> atualizar (@RequestBody Postagem postagem){
+	public ResponseEntity<Postagem> put (@RequestBody Postagem postagem){
 		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));		
 	}
-	@DeleteMapping("/delete/{id}")
-	public void delete(@PathVariable long id) {
-		repository.deleteById(id);
+	@DeleteMapping("/deletar/{id}")
+	public ResponseEntity<Postagem> deletar(@PathVariable(value = "id")Long idPostagem ){
+		Optional<Postagem> objetoOptional = repository.findById(idPostagem);
+		
+		if(objetoOptional.isPresent()) {
+			repository.deleteById(idPostagem);
+			return ResponseEntity.status(204).build();
+		}else {
+			return ResponseEntity.status(400).build();
+		}
 	}
 	
 

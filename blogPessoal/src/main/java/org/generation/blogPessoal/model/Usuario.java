@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -28,7 +29,7 @@ public class Usuario {
 	@NotNull
 	@Size(min = 2, max = 100)
 	private String nome;
-	
+
 	@ApiModelProperty(example = "email@email.com.br")
 	@NotNull
 	@Size(min = 5, max = 100)
@@ -36,12 +37,17 @@ public class Usuario {
 
 	@NotNull
 	@Size(min = 5, max = 100)
-	private String Senha;
-	
+	private String senha;
+
+	private String foto;
+
+	private String tipo;
+
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("usuario")
-	private List<Postagem> postagens = new ArrayList<>();
-	
+	@JsonIgnoreProperties("usuario")	
+	@ApiModelProperty(hidden = true)
+	private List<Postagem> minhasPostagens = new ArrayList<>();
+
 	public long getId() {
 		return id;
 	}
@@ -67,12 +73,38 @@ public class Usuario {
 	}
 
 	public String getSenha() {
-		return Senha;
+		return senha;
 	}
 
 	public void setSenha(String senha) {
-		Senha = senha;
+		this.senha = senha;
+	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<Postagem> getMinhasPostagens() {
+		return minhasPostagens;
+	}
+
+	public void setMinhasPostagens(List<Postagem> minhasPostagens) {
+		this.minhasPostagens = minhasPostagens;
 	}
 	
 	
+	
+
 }

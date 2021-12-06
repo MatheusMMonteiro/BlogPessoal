@@ -3,6 +3,8 @@ package org.generation.blogPessoal.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.generation.blogPessoal.model.UserLogin;
 import org.generation.blogPessoal.model.Usuario;
 import org.generation.blogPessoal.repository.UsuarioRepository;
@@ -25,52 +27,104 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/usuarios")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UsuarioController {
-
-	private @Autowired UsuarioService usuarioService;
-	private @Autowired UsuarioRepository repository;
-
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
+	private UsuarioRepository repository;
+	
 	@GetMapping("/todes")
-	public ResponseEntity<List<Usuario>> pegarTodes() {
+	public ResponseEntity<List<Usuario>> pegarTodes(){
 		List<Usuario> objetoLista = repository.findAll();
-
-		if (objetoLista.isEmpty()) {
+		
+		if(objetoLista.isEmpty()) {
 			return ResponseEntity.status(204).build();
-		} else {
+		}else {
 			return ResponseEntity.status(200).body(objetoLista);
 		}
 	}
-
+	@GetMapping("/nome/{nome_usuario}")
+	public ResponseEntity<List<Usuario>> buscaNome(@PathVariable(value = "nome_usuario") String nome){
+		List<Usuario> objetoLista = repository.findAllByNomeContainingIgnoreCase(nome);
+		
+		if(objetoLista.isEmpty()) {
+			return ResponseEntity.status(204).build();
+		}else {
+			return ResponseEntity.status(200).body(objetoLista);
+		}
+	}
+	@GetMapping("/{id_usuario}")
+	public ResponseEntity<Usuario> buscarPorId(@PathVariable(value = "id_usuario") Long idUsuario){
+		return repository.findById(idUsuario).map(resp -> ResponseEntity.status(200).body(resp))
+				.orElseThrow(() ->{
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+							"Id inexistente, passe um Id válido para pesquisa");
+				});
+	}	
+	
 	@PostMapping("/logar")
-	public ResponseEntity<UserLogin> autentication(@RequestBody Optional<UserLogin> user) {
+	public ResponseEntity<UserLogin> autentication(@RequestBody Optional<UserLogin> user){
 		return usuarioService.logar(user).map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
-
+	
 	@PostMapping("/cadastrar")
-	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
-		return usuarioService.cadastrarUsuario(usuario).map(resp -> ResponseEntity.status(201).body(usuario))
-				.orElseThrow(() -> {
+	public ResponseEntity<Usuario> Post(@RequestBody Usuario usuario){
+		return usuarioService.cadastrarUsuario(usuario)
+				.map(usuarioExistente -> ResponseEntity.status(201).body(usuario))
+				.orElseThrow(() ->{
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 							"Usuario existente, cadastre outro usuário!");
 				});
 	}
-
+	
 	@PutMapping("/atualizar")
-	public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> atualizar(@Valid @RequestBody Usuario usuario){
 		return usuarioService.atualizarUsuario(usuario).map(resp -> ResponseEntity.status(201).body(resp))
-				.orElseThrow(() -> {
-					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Digite um IdUsuario válido!");
+				.orElseThrow(() ->{
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+							"Necessário que passe um idUsuario válido");
 				});
 	}
-
+	
 	@DeleteMapping("/deletar/{id_usuario}")
-	public ResponseEntity<Object> deletar(@PathVariable(value = "id_usuario") Long idUsuario) {
-		return repository.findById(idUsuario).map(resp -> {
+	public ResponseEntity<Object> deletar(@PathVariable(value = "id_usuario") Long idUsuario){
+		return repository.findById(idUsuario).map(resp ->{
 			repository.deleteById(idUsuario);
-			return ResponseEntity.status(204).build();
-		}).orElseThrow(() -> {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Informe um ID valido para deletar!.");
+			return ResponseEntity.status(200).build();
+		}).orElseThrow(() ->{
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+					"ID inexistente, passe um ID valido para deletar!.");
 		});
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

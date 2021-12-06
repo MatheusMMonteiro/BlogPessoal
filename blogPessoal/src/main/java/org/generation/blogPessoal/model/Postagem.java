@@ -40,12 +40,12 @@ public class Postagem {
 	
 	@ManyToOne	
 	@JoinColumn(name = "fk_tema")
-	@JsonIgnoreProperties("postagem")
-	private TemaModel tema;
+	@JsonIgnoreProperties("postagens")
+	private TemaModel temaRelacionado;
 	
 	@ManyToOne
 	@JoinColumn(name = "fk_usuario")
-	@JsonIgnoreProperties("postagens")
+	@JsonIgnoreProperties("minhasPostagens")
 	private Usuario usuario;
 
 	public long getId() {
@@ -79,13 +79,12 @@ public class Postagem {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-	public TemaModel getTema() {
-		return tema;
+	public TemaModel getTemaRelacionado() {
+		return temaRelacionado;
 	}
 
-	public void setTema(TemaModel tema) {
-		this.tema = tema;
+	public void setTemaRelacionado(TemaModel temaRelacionado) {
+		this.temaRelacionado = temaRelacionado;
 	}
 
 	public Usuario getUsuario() {

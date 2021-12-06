@@ -1,5 +1,6 @@
 package org.generation.blogPessoal.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,8 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "tema")
 public class TemaModel {
@@ -24,9 +27,10 @@ public class TemaModel {
 	@NotNull
 	private String descricao;
 	
-	@OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tema")
-	private List<Postagem> postagem;
+	@OneToMany(mappedBy = "temaRelacionado", cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"temaRelacionado"})
+	@ApiModelProperty(hidden = true)
+	private List<Postagem> postagens = new ArrayList<>();
 
 	public Long getId() {
 		return id;
