@@ -8,7 +8,7 @@
 # 📕Instalação 
 ### 1. Clone esse repositório
 ```
-git clone https://github.com/MatheusMMonteiro/ProjetoASAP
+git clone https://github.com/MatheusMMonteiro/BlogPessoal
 ```
 ---
 ### 2. Instalação de dependências
