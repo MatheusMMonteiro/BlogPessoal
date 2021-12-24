@@ -46,7 +46,18 @@ public class Usuario {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("usuario")	
 	@ApiModelProperty(hidden = true)
-	private List<Postagem> minhasPostagens = new ArrayList<>();
+	private List<Postagem> minhasPostagens = new ArrayList<>();	
+	
+	public Usuario(long id, String nome, String usuario, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.usuario = usuario;
+		this.senha = senha;
+	}
+	
+	public Usuario() {
+	}
+	
 
 	public long getId() {
 		return id;
